@@ -114,8 +114,8 @@ def register():
             flash("Username and password required.", "error")
             return redirect(url_for("main.register"))
 
-        # requires 8 characters or more 
-        if len(username) <=8 or len(password_raw)<=8 :
+        # requires 8 characters or more
+        if len(username) <=3 or len(password_raw)<=8 :
             flash("the username and password must be atleast 8 characters.", "error")
             return redirect(url_for("main.register")) 
 
