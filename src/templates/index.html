@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gallrio</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <!-- NAVBAR -->
+
+    <script>
+
+    </script>
+
+    <div class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="nav-left">
+            <a href="{{ url_for('main.index') }}">
+                <img src="/static/logo.png" class="Logo">
+            </a>
+        </div>
+        <div class="nav-right">
+            {% if user %}
+            <a id="UserNames" href="{{ url_for('main.profile', username=user.username) }}">
+                <img src="{{ url_for('static', filename=user.avatar) }}" alt="Avatar" class="avatar-lg" style="height:50px;width:auto">
+                {{ user.username }}
+            </a>
+            <a href="{{url_for('main.logout')}}" style="color:blue;font-family: italic;">Logout</a>
+            {% else %}
+            <a id="UserNames" href="{{ url_for('main.login')}}">
+                <img src="static/avatars/unknown.png" alt="Avatar" class="avatar-lg" style="height:50px;width:auto">
+            </a>
+            <a href="{{url_for('main.logout')}}" class="btn btn-primary fancy-link neon">Login</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <main class="container">
+        <!-- Upload Post -->
+        {% if user %}
+        <div class="card upload-card">
+            <form action="{{ url_for('main.upload') }}" method="POST" enctype="multipart/form-data" class="upload-form">
+                <input type="file" name="photo" accept="image/*" required>
+                <input type="text" name="caption" placeholder="Write a caption..." required>
+                <button type="submit" class="btn-primary">Upload</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="card upload-card">
+            <a href="{{ url_for('main.login') }}" class="fancy-link neon">Login to post !</a>
+        </div>
+        {% endif %}
+
+        <!-- Posts Feed -->
+        {% for post in posts %}
+        <div class="card post-card" onclick="window.location.href='{{ url_for('main.view_post', post_id=post.id) }}';" style="cursor:pointer;">
+            <div class="post-header" style="display: flex;">
+                <a href="{{ url_for('main.profile', username=post['username']) }}" class="username" onclick="event.stopPropagation();" style="display: inline-flex; align-items: center; gap: 8px;">
+                <img src="{{ url_for('static', filename=post['avatar']) }}" class="avatar-sm" alt="Avatar">
+                <span>{{ post['username'] }}</span>
+                </a>
+                <span class="timestamp">{{ post['timestamp'] }}</span>
+            </div>
+
+            <img src="{{ url_for('main.uploaded_file', filename=post['image']) }}" class="post-image" alt="Post Image">
+
+            <div class="post-body">
+                <p class="caption">{{ post['caption'] }}</p>
+                <div class="like-section">
+                    {% if user %}
+                    <button class="like-btn" data-id="{{ post.id }}" >❤️ 
+                        <span id="like-count-{{ post.id }}">{{ post.like_count }}</span>
+                    </button>
+                    <button class="dislike-btn" data-id="{{ post.id }}" >💔 
+                        <span id="dislike-count-{{ post.id }}">{{ post.dislike_count }}</span>
+                    </button>
+                    {% else %}
+                    <span id="like-count-{{ post.id }}">{{ post.like_count }} likes</span>
+                    <span id="dislike-count-{{ post.id }}">{{ post.dislike_count }} disikes</span>
+                    <a href="/login" class="fancy-link neon">You should login to interact with posts.</a>
+                    {% endif %}
+                    <a href="{{ url_for('main.view_post', post_id=post.id) }}" class="comment-link" onclick="event.stopPropagation();">
+                        💬 {{ post.comment_count }} Comments
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p class="no-posts">No posts yet. Be the first to share something!</p>
+        {% endfor %}
+        <div class="pagination" style="text-align: center;">
+          {% if page > 1 %}
+            <a href="{{ url_for('main.index', page=page-1) }}" class="fancy-link neon" style="float: left;">< -- Previous</a>
+          {% endif %}
+          <span style="color: blue">{{ page }}</span>
+          <a href="{{ url_for('main.index', page=page+1) }}" style="float: right;" class="fancy-link neon">Next -- ></a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>*Made* by Nezar Himself </p><a href="mailto:n.bahid@aui.ma" class="fancy-link neon">Contact Me</a>
+        <h6>do not post anything that you do not have permission to post.</h6>
+    </footer>
+
+<script src="{{ url_for('static', filename='post_index.js') }}"></script>
+{% if user %}
+    {% include "side.html" %}
+{% endif%}
+</body>
+</html>
