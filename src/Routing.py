@@ -114,6 +114,12 @@ def register():
             flash("Username and password required.", "error")
             return redirect(url_for("main.register"))
 
+        # requires 8 characters or more 
+        if len(username) <=8 or len(password_raw)<=8 :
+            flash("the username and password must be atleast 8 characters.", "error")
+            return redirect(url_for("main.register")) 
+
+        
         # Process avatar if provided
         avatar_path = save_avatar_file(avatar_file) if avatar_file else None
         if not avatar_path:
