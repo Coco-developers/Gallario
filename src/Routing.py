@@ -1,6 +1,6 @@
 import sqlite3                # Database operations
 from datetime import datetime # Date/time handling
-import time
+import time, math
 
 # Flask framework imports
 from flask import (
@@ -34,7 +34,8 @@ def index():
     #Sort by arg
     sortby = request.args.get("sortby", "time")
     accending = int(request.args.get("accending", 1))
-
+    # Get number of posts
+    total_posts = db.execute("SELECT COUNT(*) FROM posts").fetchone()[0] 
     # Pagination setup
     page = int(request.args.get("page", 1))
     per_page = 5  # Posts per page
@@ -59,7 +60,7 @@ def index():
     """, (user_id, per_page, offset)).fetchall()
 
     db.close()
-    return render_template("index.html", posts=posts, user=current_user(), page=page)
+    return render_template("index.html", posts=posts, user=current_user(), page=page, total_posts=total_posts, total_pages=math.ceil(total_posts / per_page))
 
 @main_bp.route("/login", methods=["GET", "POST"])
 def login():

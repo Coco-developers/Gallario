@@ -28,7 +28,7 @@
             {% endif %}
         </div>
     </div>
-    
+
     <main class="container">
         <!-- Upload Post -->
         {% if user %}
@@ -83,16 +83,18 @@
         <p class="no-posts">No posts yet. Be the first to share something!</p>
         {% endfor %}
         <div class="pagination" style="text-align: center;">
-          {% if page > 1 %}
-            <a href="{{ url_for('main.index', page=page-1) }}" class="fancy-link neon" style="float: left;">< -- Previous</a>
-          {% endif %}
-          <span style="color: blue">{{ page }}</span>
-          <a href="{{ url_for('main.index', page=page+1) }}" style="float: right;" class="fancy-link neon">Next -- ></a>
+            {% if page > 1 %}
+                <a href="{{ url_for('main.index', page=page-1) }}" class="fancy-link neon" style="float: left;">< -- Previous</a>
+            {% endif %}
+            <span style="color: blue">{{ page }}</span>
+            {% if page < total_pages %}
+                <a href="{{ url_for('main.index', page=page+1) }}" style="float: right;" class="fancy-link neon">Next -- ></a>
+            {% endif %}
         </div>
     </main>
 
     <footer class="footer">
-        <p>*Made* by Coco-Devs </p><a href="mailto:n.bahid@aui.ma" class="fancy-link neon">Contact Me</a>
+        <p style="font-style: italic;">Made by The Coco-Devs </p><a href="mailto:coco-devs@proton.me" class="fancy-link neon">Contact Us at CoCo-Devs@Proton.me</a>
         <h6>do not post anything that you do not have permission to post.</h6>
     </footer>
 
