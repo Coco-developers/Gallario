@@ -1,3 +1,7 @@
 /src/static/uploads
 /src/database.db
 /src/__pycache__
+*.pyc
+__pycache__/
+env/
+venv/
