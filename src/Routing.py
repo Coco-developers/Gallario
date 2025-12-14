@@ -1,10 +1,11 @@
 import sqlite3                # Database operations
 from datetime import datetime # Date/time handling
+import time
 
 # Flask framework imports
 from flask import (
     render_template, request, redirect, url_for,
-    session, send_from_directory, jsonify, flash, Blueprint
+    session, send_from_directory, jsonify, flash, Blueprint, current_app
 )
 
 # Security and file handling imports
@@ -188,127 +189,174 @@ def upload():
 
 @main_bp.route("/like/<int:post_id>", methods=["POST"])
 def like(post_id):
-    """
-    Handle like/unlike functionality for posts.
-    Toggle behavior: like if not liked, unlike if already liked.
-    Returns JSON with updated counts for AJAX updates.
-    """
-    # Check authentication
     user = current_user()
     if not user:
         return jsonify(success=False), 401
 
     db = get_db()
+    # let SQLite wait a bit for locks instead of failing immediately
+    try:
+        db.execute("PRAGMA busy_timeout = 5000")  # milliseconds
+        db.execute("PRAGMA journal_mode = WAL")
+    except Exception:
+        # pragma may fail on some configurations; ignore if it does
+        pass
 
-    # Get the post owner (for notifications)
-    post = db.execute("SELECT user_id FROM posts WHERE id=?", (post_id,)).fetchone()
+    post = db.execute("SELECT user_id FROM posts WHERE id = ?", (post_id,)).fetchone()
     if not post:
         return jsonify(success=False, error="Post not found"), 404
 
-    # Check if user already reacted to this post
-    existing = db.execute("SELECT * FROM likes WHERE user_id=? AND post_id=?", 
-                          (user["id"], post_id)).fetchone()
+    # retry loop for transient locking issues
+    retries = 6
+    backoff_base = 0.02
+    for attempt in range(retries):
+        try:
+            existing = db.execute(
+                "SELECT id, value FROM likes WHERE user_id = ? AND post_id = ?",
+                (user["id"], post_id)
+            ).fetchone()
 
-    if existing:
-        if existing["value"] == 1:
-            # User already liked - remove the like (unlike)
-            db.execute("DELETE FROM likes WHERE id=?", (existing["id"],))
-        else:
-            # User disliked - change to like
-            db.execute("UPDATE likes SET value=1 WHERE id=?", (existing["id"],))
+            if existing:
+                if existing["value"] == 1:
+                    # toggle off
+                    db.execute("DELETE FROM likes WHERE id = ?", (existing["id"],))
+                else:
+                    # change dislike -> like
+                    db.execute("UPDATE likes SET value = 1 WHERE id = ?", (existing["id"],))
+                    if post["user_id"] != user["id"]:
+                        db.execute(
+                            "INSERT INTO notifications (maker_id, receiver_id, type, reference_id) VALUES (?, ?, ?, ?)",
+                            (user["id"], post["user_id"], 0, post_id)
+                        )
+            else:
+                # try to insert; use upsert fallback in case of race below
+                db.execute("INSERT INTO likes (user_id, post_id, value) VALUES (?, ?, 1)",
+                           (user["id"], post_id))
+                if post["user_id"] != user["id"]:
+                    db.execute(
+                        "INSERT INTO notifications (maker_id, receiver_id, type, reference_id) VALUES (?, ?, ?, ?)",
+                        (user["id"], post["user_id"], 0, post_id)
+                    )
 
-            # Send notification to post owner (if not self-like)
-            if post["user_id"] != user["id"]:
-                db.execute("""
-                    INSERT INTO notifications (maker_id, receiver_id, type, reference_id)
-                    VALUES (?, ?, ?, ?)
-                """, (user["id"], post["user_id"], 0, post_id))  # type 0 = like
-    else:
-        # First time reaction - add like
-        db.execute("INSERT INTO likes (user_id, post_id, value) VALUES (?, ?, 1)", 
-                   (user["id"], post_id))
+            db.commit()
+            break  # success -> exit retry loop
 
-        # Send notification to post owner (if not self-like)
-        if post["user_id"] != user["id"]:
+        except sqlite3.IntegrityError:
+            # Rare race: someone else inserted the same (user_id,post_id) at the same time.
+            # Use upsert to set the correct value (1).
             db.execute("""
-                INSERT INTO notifications (maker_id, receiver_id, type, reference_id)
-                VALUES (?, ?, ?, ?)
-            """, (user["id"], post["user_id"], 0, post_id))  # type 0 = like
+                INSERT INTO likes (user_id, post_id, value)
+                VALUES (?, ?, 1)
+                ON CONFLICT(user_id, post_id) DO UPDATE SET value=excluded.value
+            """, (user["id"], post_id))
+            if post["user_id"] != user["id"]:
+                db.execute(
+                    "INSERT INTO notifications (maker_id, receiver_id, type, reference_id) VALUES (?, ?, ?, ?)",
+                    (user["id"], post["user_id"], 0, post_id)
+                )
+            db.commit()
+            break
 
-    db.commit()
+        except sqlite3.OperationalError as e:
+            # transient lock - backoff and retry
+            if attempt == retries - 1:
+                current_app.logger.exception("DB locked when processing like")
+                return jsonify(success=False, error="database is locked"), 500
+            time.sleep(backoff_base * (2 ** attempt))
+            continue
 
-    # Get updated reaction counts
-    like_count = db.execute("SELECT COUNT(*) FROM likes WHERE post_id=? AND value=1", 
-                            (post_id,)).fetchone()[0]
-    dislike_count = db.execute("SELECT COUNT(*) FROM likes WHERE post_id=? AND value=-1", 
-                               (post_id,)).fetchone()[0]
-    db.close()
+    # updated counts
+    like_count = db.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND value = 1", (post_id,)).fetchone()[0]
+    dislike_count = db.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND value = -1", (post_id,)).fetchone()[0]
 
-    # Return JSON response for AJAX
+    try:
+        db.close()
+    except Exception:
+        pass
+
     return jsonify(success=True, like_count=like_count, dislike_count=dislike_count)
+
 
 @main_bp.route("/dislike/<int:post_id>", methods=["POST"])
 def dislike(post_id):
-    """
-    Handle like/unlike functionality for posts.
-    Toggle behavior: like if not liked, unlike if already liked.
-    Returns JSON with updated counts for AJAX updates.
-    """
-    # Check authentication
     user = current_user()
     if not user:
         return jsonify(success=False), 401
 
     db = get_db()
+    try:
+        db.execute("PRAGMA busy_timeout = 5000")
+        db.execute("PRAGMA journal_mode = WAL")
+    except Exception:
+        pass
 
-    # Get the post owner (for notifications)
-    post = db.execute("SELECT user_id FROM posts WHERE id=?", (post_id,)).fetchone()
+    post = db.execute("SELECT user_id FROM posts WHERE id = ?", (post_id,)).fetchone()
     if not post:
         return jsonify(success=False, error="Post not found"), 404
 
-    # Check if user already reacted to this post
-    existing = db.execute("SELECT * FROM likes WHERE user_id=? AND post_id=?", 
-                          (user["id"], post_id)).fetchone()
+    retries = 6
+    backoff_base = 0.02
+    for attempt in range(retries):
+        try:
+            existing = db.execute(
+                "SELECT id, value FROM likes WHERE user_id = ? AND post_id = ?",
+                (user["id"], post_id)
+            ).fetchone()
 
-    if existing:
-        if existing["value"] == -1:
-            # User already disliked - remove the dislike (undislike)
-            db.execute("DELETE FROM likes WHERE id=?", (existing["id"],))
-        else:
-            # User liked - change to dislike
-            db.execute("UPDATE likes SET value=-1 WHERE id=?", (existing["id"],))
+            if existing:
+                if existing["value"] == -1:
+                    # toggle off
+                    db.execute("DELETE FROM likes WHERE id = ?", (existing["id"],))
+                else:
+                    # change like -> dislike
+                    db.execute("UPDATE likes SET value = -1 WHERE id = ?", (existing["id"],))
+                    if post["user_id"] != user["id"]:
+                        db.execute(
+                            "INSERT INTO notifications (maker_id, receiver_id, type, reference_id) VALUES (?, ?, ?, ?)",
+                            (user["id"], post["user_id"], 1, post_id)
+                        )
+            else:
+                db.execute("INSERT INTO likes (user_id, post_id, value) VALUES (?, ?, -1)",
+                           (user["id"], post_id))
+                if post["user_id"] != user["id"]:
+                    db.execute(
+                        "INSERT INTO notifications (maker_id, receiver_id, type, reference_id) VALUES (?, ?, ?, ?)",
+                        (user["id"], post["user_id"], 1, post_id)
+                    )
 
-            # Send notification to post owner (if not self-like)
-            if post["user_id"] != user["id"]:
-                db.execute("""
-                    INSERT INTO notifications (maker_id, receiver_id, type, reference_id)
-                    VALUES (?, ?, ?, ?)
-                """, (user["id"], post["user_id"], 1, post_id))  # type 1 = dislike
-    else:
-        # First time reaction - add like
-        db.execute("INSERT INTO likes (user_id, post_id, value) VALUES (?, ?, -1)", 
-                   (user["id"], post_id))
+            db.commit()
+            break
 
-        # Send notification to post owner (if not self-like)
-        if post["user_id"] != user["id"]:
+        except sqlite3.IntegrityError:
             db.execute("""
-                INSERT INTO notifications (maker_id, receiver_id, type, reference_id)
-                VALUES (?, ?, ?, ?)
-            """, (user["id"], post["user_id"], 1, post_id))  # type 1 = dislike
+                INSERT INTO likes (user_id, post_id, value)
+                VALUES (?, ?, -1)
+                ON CONFLICT(user_id, post_id) DO UPDATE SET value=excluded.value
+            """, (user["id"], post_id))
+            if post["user_id"] != user["id"]:
+                db.execute(
+                    "INSERT INTO notifications (maker_id, receiver_id, type, reference_id) VALUES (?, ?, ?, ?)",
+                    (user["id"], post["user_id"], 1, post_id)
+                )
+            db.commit()
+            break
 
-    db.commit()
+        except sqlite3.OperationalError:
+            if attempt == retries - 1:
+                current_app.logger.exception("DB locked when processing dislike")
+                return jsonify(success=False, error="database is locked"), 500
+            time.sleep(backoff_base * (2 ** attempt))
+            continue
 
-    # Get updated reaction counts
-    like_count = db.execute("SELECT COUNT(*) FROM likes WHERE post_id=? AND value=1", 
-                            (post_id,)).fetchone()[0]
-    dislike_count = db.execute("SELECT COUNT(*) FROM likes WHERE post_id=? AND value=-1", 
-                               (post_id,)).fetchone()[0]
-    db.close()
+    like_count = db.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND value = 1", (post_id,)).fetchone()[0]
+    dislike_count = db.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND value = -1", (post_id,)).fetchone()[0]
 
-    # Return JSON response for AJAX
+    try:
+        db.close()
+    except Exception:
+        pass
+
     return jsonify(success=True, like_count=like_count, dislike_count=dislike_count)
-
-
 
 @main_bp.route("/post/<int:post_id>")
 def view_post(post_id):

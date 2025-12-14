@@ -72,6 +72,11 @@
 <script>
     Post = false;
 </script>
+{% if user and user['username'] == profile['username'] %}
+<script src="{{ url_for('static', filename='change_desc.js') }}"></script>
+{% endif %} 
+
+
 <script src="/static/code.js"></script>
 {% if user %}
     {% include "side.html" %}
