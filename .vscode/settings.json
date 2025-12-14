@@ -5,7 +5,6 @@
         "**/.hg": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
-        ".gitignore": true,
         "requirements.txt": true,
         "README.md": true,
         ".vscode": true
