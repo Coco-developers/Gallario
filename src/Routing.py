@@ -123,7 +123,7 @@ def register():
         # Process avatar if provided
         avatar_path = save_avatar_file(avatar_file) if avatar_file else None
         if not avatar_path:
-            avatar_path = './avatars/default.png'  # Use default avatar
+            avatar_path = 'avatars/unknown.png'  # Use default avatar
 
         # Create user account
         db = get_db()
