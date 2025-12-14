@@ -60,7 +60,9 @@
                 <a href="{{ url_for('main.view_post', post_id=post['id']) }}">
                     <img src="{{ url_for('main.uploaded_file', filename=post['image']) }}" class="post-thumb" alt="Post">
                 </a>
-                <a href="#" onclick='deletePost("{{post.id}}"); return false' class="delete-btn">X</a>
+                {% if user and user['username'] == profile['username'] %}
+                    <a href="#" onclick='deletePost("{{post.id}}"); return false' class="delete-btn">X</a>
+                {% endif %}
             </div>
             {% else %}
             <p class="no-posts">This user has no posts yet.</p>
