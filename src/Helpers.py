@@ -219,23 +219,27 @@ def save_upload_file(file_storage):
     - Validates file type
     - Creates secure filename
     - Saves to uploads folder
-    Returns the stored filename.
+    - Creates a thumbnail with _thumb suffix
+    Returns the stored filename (original file).
     """
-    # Validate file
     if not file_storage or file_storage.filename == "":
         return None
     if not allowed_file(file_storage.filename):
         return None
-    
-    # Create secure filename with UUID prefix
+    # Create secure filename with UUID
     filename = secure_filename(file_storage.filename)
     unique = f"{uuid.uuid4().hex}_{filename}"
     full_path = os.path.join(UPLOAD_FOLDER, unique)
-    
-    # Save the file
+    # Save original file first
     file_storage.save(full_path)
+    # Open saved image and create thumbnail
+    with Image.open(full_path) as img:
+        img.thumbnail((720, 1280))  # keeps aspect ratio
+        name, ext = os.path.splitext(unique)
+        thumb_filename = f"{name}_thumb{ext}"
+        thumb_path = os.path.join(UPLOAD_FOLDER, thumb_filename)
+        img.save(thumb_path)
     return unique
-
 def remove_upload_file(stored_filename):
     """
     Safely delete an uploaded file from the filesystem.
@@ -250,3 +254,21 @@ def remove_upload_file(stored_filename):
         # Silently handle any file deletion errors
         pass
     return False
+
+def create_thumbnail(input_path, output_path, size=(150, 150), keep_aspect_ratio=True):
+    """
+    Creates a thumbnail of an image.
+    
+    :param input_path: Path to original image
+    :param output_path: Path to save thumbnail
+    :param size: Tuple (width, height)
+    :param keep_aspect_ratio: If True, thumbnail keeps original aspect ratio
+    """
+    with Image.open(input_path) as img:
+        if keep_aspect_ratio:
+            # Pillow will resize the image so it fits within the size box
+            img.thumbnail(size)  # modifies in place
+        else:
+            # Resize to exact size (may stretch/squash)
+            img = img.resize(size)
+        img.save(output_path)
