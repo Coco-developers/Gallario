@@ -221,4 +221,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 📧 **Contact me for questions or collaboration opportunities.**
 
 
-© 2025 Ba Isaam Zin. All rights reserved.
+© 2025 Nezar. All rights reserved.
