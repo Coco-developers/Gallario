@@ -141,3 +141,12 @@ function updateTimestamps() {
 updateTimestamps();
 // refresh every 60 seconds so "mins ago" stays accurate
 setInterval((updateTimestamps), 60 * 1000);
+
+// Post uploading feedback
+document.getElementById('post-upload')?.addEventListener('submit', function() {
+  const submitButton = this.querySelector('button[type="submit"]');
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = 'Your post is being uploaded...';
+  }
+});

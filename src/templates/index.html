@@ -33,7 +33,7 @@
         <!-- Upload Post -->
         {% if user %}
         <div class="card upload-card">
-            <form action="{{ url_for('main.upload') }}" method="POST" enctype="multipart/form-data" class="upload-form">
+            <form id="post-upload" action="{{ url_for('main.upload') }}" method="POST" enctype="multipart/form-data" class="upload-form">
                 <input type="file" name="photo" accept="image/*" required>
                 <input type="text" name="caption" placeholder="Write a caption..." required>
                 <button type="submit" class="btn-primary">Upload</button>
@@ -96,6 +96,7 @@
     <footer class="footer">
         <p style="font-style: italic;">Made by The Coco-Devs </p><a href="mailto:coco-devs@proton.me" class="fancy-link neon">Contact Us at CoCo-Devs@Proton.me</a>
         <h6>do not post anything that you do not have permission to post.</h6>
+        <h6>Copyright (c) 2025 Nezar. All rights reserved.</h6>
     </footer>
 
 <script src="{{ url_for('static', filename='post_index.js') }}"></script>
