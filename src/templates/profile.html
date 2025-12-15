@@ -58,7 +58,7 @@
             {% for post in posts %}
             <div class="post-card-grid">
                 <a href="{{ url_for('main.view_post', post_id=post['id']) }}">
-                    <img src="{{ url_for('main.uploaded_file', filename=post['image']) }}" class="post-thumb" alt="Post">
+                    <img src="{{ url_for('main.uploaded_file', filename=post['image']|replace('.', '_thumb.')) }}" class="post-thumb" alt="Post">
                 </a>
                 {% if user and user['username'] == profile['username'] %}
                     <a href="#" onclick='deletePost("{{post.id}}"); return false' class="delete-btn">X</a>

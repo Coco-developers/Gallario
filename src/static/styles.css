@@ -342,9 +342,10 @@ h1, h2, h3 {
 =========================== */
 .posts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* bigger, consistent boxes */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 16px;
   margin-top: 1rem;
+  justify-items: center; /* centers items horizontally inside the grid */
 }
 
 .posts-grid img {
@@ -466,19 +467,17 @@ h1, h2, h3 {
 }
 
 .no-posts {
+  grid-column: 1 / -1; /* make it span all columns */
+  max-width: 600px;     /* optional: limit width */
   text-align: center;
-  color: var(--text-muted);
+  margin: 2rem auto;    /* center block horizontally */
   font-style: italic;
-  padding: 2rem;
-  margin: 1rem 0;
-  background: var(--bg-card);
-  border-radius: var(--radius);
-  border: 1px dashed var(--text-muted);
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  margin-right: calc(-50vw + 50%);
-  box-sizing: border-box;
+  font-size: 150%;
+  color: var(--text-muted);
+  font-weight: bold;
+  
 }
+
 /* ===========================
    Responsive Tweaks
 =========================== */
