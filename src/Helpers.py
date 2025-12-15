@@ -213,33 +213,30 @@ def save_avatar_file(file_storage):
     # Return relative path for database storage
     return f"avatars/{unique_name}"
 
+from PIL import Image, ImageOps
+
 def save_upload_file(file_storage):
-    """
-    Save an uploaded post image file.
-    - Validates file type
-    - Creates secure filename
-    - Saves to uploads folder
-    - Creates a thumbnail with _thumb suffix
-    Returns the stored filename (original file).
-    """
     if not file_storage or file_storage.filename == "":
         return None
     if not allowed_file(file_storage.filename):
         return None
-    # Create secure filename with UUID
+    
     filename = secure_filename(file_storage.filename)
     unique = f"{uuid.uuid4().hex}_{filename}"
     full_path = os.path.join(UPLOAD_FOLDER, unique)
-    # Save original file first
+    # Save original
+
     file_storage.save(full_path)
-    # Open saved image and create thumbnail
     with Image.open(full_path) as img:
-        img.thumbnail((720, 1280))  # keeps aspect ratio
+        img = ImageOps.exif_transpose(img)
+        img.thumbnail((1920, 1920), Image.LANCZOS)
         name, ext = os.path.splitext(unique)
         thumb_filename = f"{name}_thumb{ext}"
         thumb_path = os.path.join(UPLOAD_FOLDER, thumb_filename)
-        img.save(thumb_path)
+
+        img.save(thumb_path, quality=90, optimize=True)
     return unique
+
 def remove_upload_file(stored_filename):
     """
     Safely delete an uploaded file from the filesystem.
