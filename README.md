@@ -219,3 +219,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ⭐ **Star this repository if you found it helpful!**
 
 📧 **Contact me for questions or collaboration opportunities.**
+
+
+© 2025 Ba Isaam Zin. All rights reserved.
