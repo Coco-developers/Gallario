@@ -21,6 +21,10 @@
                         <input type="file" name="avatar" class="form-control">
                     </div>
                     {% endif %}
+                    {% if !register %}
+                        <input type="checkbox">
+                    {% endif %}
+
 
                     <button type="submit" class="btn btn-primary w-100">
                         {{ 'Register' if register else 'Login' }}
