@@ -12,29 +12,122 @@
             <a href="{{ url_for('main.index') }}">
                 <img src="/static/logo.png" class="Logo">
             </a>
-        </div>
-        <div class="nav-right">
-            {% if user %}
-            <a id="UserNames" href="{{ url_for('main.profile', username=user.username) }}">
-                <img src="{{ url_for('static', filename=user.avatar) }}" alt="Avatar" class="avatar-lg" style="height:50px;width:auto">
-                {{ user.username }}
-            </a>
-            <a href="{{url_for('main.logout')}}" style="color:blue;font-family: italic;">Logout</a>
-            {% else %}
-            <a id="UserNames" href="{{ url_for('main.login')}}">
-                <img src="static/avatars/unknown.png" alt="Avatar" class="avatar-lg" style="height:50px;width:auto">
-            </a>
-            <a href="{{url_for('main.logout')}}" class="btn btn-primary fancy-link neon">Login</a>
-            {% endif %}
-        </div>
-    </div>
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Legal Agreement - Gallario</title>
+            <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+        </head>
+        <body>
+            <div class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+                <div class="nav-left">
+                    <a href="{{ url_for('main.index') }}">
+                        <img src="/static/logo.png" class="Logo">
+                    </a>
+                </div>
+                <div class="nav-right">
+                    {% if user %}
+                    <a id="UserNames" href="{{ url_for('main.profile', username=user.username) }}">
+                        <img src="{{ url_for('static', filename=user.avatar) }}" alt="Avatar" class="avatar-lg" style="height:50px;width:auto">
+                        {{ user.username }}
+                    </a>
+                    <a href="{{url_for('main.logout')}}" style="color:blue;font-family: italic;">Logout</a>
+                    {% else %}
+                    <a id="UserNames" href="{{ url_for('main.login')}}">
+                        <img src="static/avatars/unknown.png" alt="Avatar" class="avatar-lg" style="height:50px;width:auto">
+                    </a>
+                    <a href="{{url_for('main.logout')}}" class="btn btn-primary fancy-link neon">Login</a>
+                    {% endif %}
+                </div>
+            </div>
 
-    <main id="container">
-    </main> 
-<script type="module">
-	import { display } from "markdown.js";
+            <main class="container">
+                <div class="card legal-card">
+                    <h1>Legal Agreement</h1>
+                    <p>By using Gallario, you agree to comply with our terms and conditions. Please read them carefully before proceeding.</p>
+                    <h2>Terms of Service</h2>
+                    <p>1. Use of the Platform
 
-	display("legal_agreement.md", document.getElementById("container"));
-</script>
-</body>
-</html>    
+        This website allows users to upload and share images. You agree to use the platform only for lawful purposes and in accordance with these terms.
+
+        2. User Content
+
+        You are solely responsible for any images or content you upload to the website. You confirm that you own the content or have obtained all necessary permissions to upload and share it.
+
+        By uploading content, you grant the website a non-exclusive, royalty-free license to display, store, and distribute your images on the platform.
+
+        3. Prohibited Content
+
+        You agree not to upload content that:
+
+        Violates copyright or intellectual property laws
+
+        Contains illegal, harmful, or offensive material
+
+        Includes explicit or sexually inappropriate content
+
+        Promotes hate, harassment, or discrimination
+
+        Infringes on the privacy or rights of others
+
+        The website reserves the right to remove any content that violates these rules.
+
+        4. Content Moderation
+
+        The website may review, remove, or restrict access to content at its discretion. The website is not obligated to monitor all user-generated content.
+
+        5. User Responsibilities
+
+        You agree to:
+
+        Use the website responsibly and respectfully
+
+        Comply with all applicable laws and regulations
+
+        Avoid misuse of the platform or its features
+
+        Any misuse may result in suspension or termination of access.
+
+        6. Disclaimer
+
+        The website is provided “as is” without warranties of any kind. We do not guarantee that the service will be uninterrupted, secure, or error-free.
+
+        7. Limitation of Liability
+
+        The website is not liable for any damages arising from the use of the platform or from user-generated content.
+
+        8. Termination
+
+        The website reserves the right to suspend or terminate access to the platform at any time for violations of these Terms of Service.
+
+        9. Changes to Terms
+
+        These Terms of Service may be updated at any time. Continued use of the website after changes are posted constitutes acceptance of the updated terms.
+
+        10. Contact
+
+        For questions regarding these Terms of Service, please contact the website administrator.</p>
+                    <h2>Privacy Policy</h2>
+                    <p>[You confirm that any image you upload is your own or that you have legal permission to use and share it.
+
+        You retain ownership of your images.
+
+        By uploading content, you grant this website a non-exclusive, royalty-free license to display and share your images on the platform.]</p>
+                    <h2>User Responsibilities</h2>
+                    <p>[Upload only images that you own or have explicit permission to use and share.
+
+        Ensure your content does not violate copyright, trademark, or other intellectual property laws.
+
+        Avoid posting images that are illegal, harmful, violent, explicit, or offensive.
+
+        Respect the privacy and rights of others; do not upload images of people without consent where required.
+
+        Refrain from posting content that promotes hate, harassment, discrimination, or abuse.
+
+        Provide accurate information and avoid misleading or deceptive content.]</p>
+                </div>
+            </main>
+        </body>
+        </html>
