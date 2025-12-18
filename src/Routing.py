@@ -702,3 +702,6 @@ def mark_notification_seen(notif_id):
 @main_bp.route("/legal")
 def legal():
     return render_template("legal_agreement.html")
+@main_bp.route("/download")
+def download_webthingy():
+    return render_template("download.html")
