@@ -20,9 +20,10 @@
                         <label class="form-label">Avatar (optional)</label>
                         <input type="file" name="avatar" class="form-control">
                     </div>
-                    {% endif %}
-                    {% if !register %}
-                        <input type="checkbox">
+                    <label>
+                        <input type="checkbox" required>
+                        I agree to the <a href="{{ url_for('main.legal') }}">Legal Agreement</a>
+                    </label>
                     {% endif %}
 
 
