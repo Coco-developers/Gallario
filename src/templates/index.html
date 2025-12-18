@@ -56,7 +56,7 @@
                 <span class="timestamp">{{ post['timestamp'] }}</span>
             </div>
             
-            <img src="{{ url_for('main.uploaded_file', filename=post['image']|replace('.', '_thumb.')) }}" class="post-image" alt="Thumbnail">
+            <img src="{{ url_for('main.uploaded_file', filename=post['image']|replace('.', '_thumb.', 1)) }}" class="post-image" alt="Thumbnail">
             
             <div class="post-body">
                 <p class="caption">{{ post['caption'] }}</p>
