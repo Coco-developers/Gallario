@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Agreement - Gallario</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="nav-left">
+            <a href="{{ url_for('main.index') }}">
+                <img src="/static/logo.png" class="Logo">
+            </a>
+        </div>
+        <div class="nav-right">
+            {% if user %}
+            <a id="UserNames" href="{{ url_for('main.profile', username=user.username) }}">
+                <img src="{{ url_for('static', filename=user.avatar) }}" alt="Avatar" class="avatar-lg" style="height:50px;width:auto">
+                {{ user.username }}
+            </a>
+            <a href="{{url_for('main.logout')}}" style="color:blue;font-family: italic;">Logout</a>
+            {% else %}
+            <a id="UserNames" href="{{ url_for('main.login')}}">
+                <img src="static/avatars/unknown.png" alt="Avatar" class="avatar-lg" style="height:50px;width:auto">
+            </a>
+            <a href="{{url_for('main.logout')}}" class="btn btn-primary fancy-link neon">Login</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <main class="container">
+        <div class="card legal-card">
+            <h1>Legal Agreement</h1>
+            <p>By using Gallario, you agree to comply with our terms and conditions. Please read them carefully before proceeding.</p>
+            <h2>Terms of Service</h2>
+            <p>[Insert detailed terms of service here]</p>
+            <h2>Privacy Policy</h2>
+            <p>[Insert detailed privacy policy here]</p>
+            <h2>User Responsibilities</h2>
+            <p>[Insert user responsibilities here]</p>
+        </div>
+    </main>
+</body>
+</html>
