@@ -29,12 +29,12 @@
         </div>
     </div>
 
-    <main id="container">
+    <main id="container" style="max-width: 800px; margin: auto; padding: 20px;">
     </main> 
 <script type="module">
-	import { display } from "markdown.js";
+	import { display } from "{{url_for('static', filename='markdown.js')}}";
 
-	display("legal_agreement.md", document.getElementById("container"));
+	display("/static/legal_agreement.md", document.getElementById("container"));
 </script>
 </body>
 </html>    
