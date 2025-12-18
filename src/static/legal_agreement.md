@@ -1,6 +1,3 @@
-
-
-
 ## Terms of Service
 
 ### 1. Acceptance of Terms
@@ -82,14 +79,3 @@ These Terms of Service may be updated at any time. Continued use of the website 
 ### 11. Contact
 
 For questions regarding these Terms of Service, please contact the website administrator.
-
----
-
-If you want, I can:
-
-* Shorten this for a **checkbox agreement**
-* Rewrite it in **more formal legal language**
-* Adapt it specifically for **Flask**
-* Add a **Terms of Service popup/modal**
-
-Just tell me 👍
