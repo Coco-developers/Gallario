@@ -699,6 +699,6 @@ def mark_notification_seen(notif_id):
         return jsonify(success=False, error="Not found or not allowed"), 404
     return jsonify(success=True)
 
-@main_dp.route("/legal")
+@main_bp.route("/legal")
 def legal():
     return render_template("legal_agreement.html")
