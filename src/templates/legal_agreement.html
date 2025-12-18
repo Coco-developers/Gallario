@@ -12,36 +12,22 @@
             <a href="{{ url_for('main.index') }}">
                 <img src="/static/logo.png" class="Logo">
             </a>
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Legal Agreement - Gallario</title>
-            <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-        </head>
-        <body>
-            <div class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-                <div class="nav-left">
-                    <a href="{{ url_for('main.index') }}">
-                        <img src="/static/logo.png" class="Logo">
-                    </a>
-                </div>
-                <div class="nav-right">
-                    {% if user %}
-                    <a id="UserNames" href="{{ url_for('main.profile', username=user.username) }}">
-                        <img src="{{ url_for('static', filename=user.avatar) }}" alt="Avatar" class="avatar-lg" style="height:50px;width:auto">
-                        {{ user.username }}
-                    </a>
-                    <a href="{{url_for('main.logout')}}" style="color:blue;font-family: italic;">Logout</a>
-                    {% else %}
-                    <a id="UserNames" href="{{ url_for('main.login')}}">
-                        <img src="static/avatars/unknown.png" alt="Avatar" class="avatar-lg" style="height:50px;width:auto">
-                    </a>
-                    <a href="{{url_for('main.logout')}}" class="btn btn-primary fancy-link neon">Login</a>
-                    {% endif %}
-                </div>
-            </div>
+        </div>
+        <div class="nav-right">
+            {% if user %}
+            <a id="UserNames" href="{{ url_for('main.profile', username=user.username) }}">
+                <img src="{{ url_for('static', filename=user.avatar) }}" alt="Avatar" class="avatar-lg" style="height:50px;width:auto">
+                {{ user.username }}
+            </a>
+            <a href="{{url_for('main.logout')}}" style="color:blue;font-family: italic;">Logout</a>
+            {% else %}
+            <a id="UserNames" href="{{ url_for('main.login')}}">
+                <img src="static/avatars/unknown.png" alt="Avatar" class="avatar-lg" style="height:50px;width:auto">
+            </a>
+            <a href="{{url_for('main.logout')}}" class="btn btn-primary fancy-link neon">Login</a>
+            {% endif %}
+        </div>
+    </div>
 
     <main id="container" style="max-width: 800px; margin: auto; padding: 20px;">
     </main> 
