@@ -45,7 +45,7 @@
             <div class="post-body">
                 <div style="display: flex; justify-content: flex-end; gap: 12px;">
                     <a href="{{ url_for('main.uploaded_file', filename=post['image']) }}" class="fancy-link neon" style="float: right;">Fullscreen</a>
-                    <a href="{{ url_for('main.uploaded_file', filename=post['image']) }}" class="fancy-link neon"  download="Image.jpg">Download</a>
+                    <!-- <a href="{{ url_for('main.uploaded_file', filename=post['image']) }}" class="fancy-link neon"  download="Image.jpg">Download</a> -->
                     {% if user and user['id'] == post['user_id'] %}
                     <a href="#" onclick='deletePost("{{post.id}}"); return false' class="fancy-link neon" style="float: right; color: red;">Delete post</a>
                     {% endif %}
