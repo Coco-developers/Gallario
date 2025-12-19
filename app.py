@@ -22,7 +22,7 @@ if __name__ == "__main__":
     """
     if arg.notlan:
         # For network access (development/testing):
-        app.run(host="0.0.0.0", port=arg.port, debug=True)
+        app.run(host="0.0.0.0", port=arg.port, debug=False)
     else:
         # For local development only:
-        app.run(port=arg.port, debug=False)
+        app.run(port=arg.port, debug=True)
