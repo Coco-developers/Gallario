@@ -25,4 +25,4 @@ if __name__ == "__main__":
         app.run(host="0.0.0.0", port=arg.port, debug=True)
     else:
         # For local development only:
-        app.run(port=arg.port, debug=True)
+        app.run(port=arg.port, debug=False)
