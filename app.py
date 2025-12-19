@@ -20,7 +20,7 @@ if __name__ == "__main__":
     - port=8080 is the server port unless changed on the Terminal
     - debug=True enables auto-reload and detailed error pages
     """
-    if arg.notlan:
+    if arg.server:
         # For network access (development/testing):
         app.run(host="0.0.0.0", port=arg.port, debug=False)
     else:

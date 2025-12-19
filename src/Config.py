@@ -13,7 +13,7 @@ from flask import (
 # Initialize Flask application
 parser = argparse.ArgumentParser(description="Gallario - ImageServer - Social Media Image Sharing Platform")
 parser.add_argument("--port", type=int, default=8080, help="Port number to run on the web app.")
-parser.add_argument("--notlan", action="store_false", default=True, help="Set it to True if you want to test it on other devices that are also connected to the local network.")
+parser.add_argument("--server", action="store_true", default=False, help="Set it to True if you're hosting this on a server.")
 arg = parser.parse_args()
 
 app = Flask(__name__)
