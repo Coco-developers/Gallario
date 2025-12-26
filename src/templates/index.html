@@ -204,7 +204,7 @@
                     </div>
                     <div class="hidden sm:block">
                         <h1 class="text-2xl font-extrabold gradient-text">Gallario</h1>
-                        <p class="text-xs text-gray-500">Share moments • Be creative</p>
+                        <p class="text-xs text-gray-500">Share moments • Be Sigma</p>
                     </div>
                 </a>
 
@@ -249,8 +249,12 @@
             </div>
             <form id="post-upload" action="{{ url_for('main.upload') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                 <div class="upload-area rounded-xl p-4 text-center cursor-pointer">
-                    <input type="file" name="photo" accept="image/*" required class="w-full text-sm text-gray-400 cursor-pointer">
+                    <input id="photoInput" type="file" name="photo" accept="image/*" required
+                        class="w-full text-sm text-gray-400 cursor-pointer">
                 </div>
+
+                <img id="imagePreview" class="hidden mt-4 rounded-xl max-h-64 mx-auto border border-white/10" />
+
                 <input type="text" name="caption" placeholder="Write a caption..." required 
                     class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-cyan-500/50 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 text-white placeholder-gray-500 transition-all">
                 <button type="submit" class="btn-primary-gradient w-full py-3 rounded-xl font-bold text-white flex items-center justify-center gap-2">
@@ -259,6 +263,12 @@
                     </svg>
                     Upload Post
                 </button>
+                <div id="progressContainer" class="hidden mt-4">
+                    <div class="w-full bg-white/10 rounded-full h-3 overflow-hidden">
+                        <div id="progressBar" class="bg-cyan-500 h-full w-0 transition-all"></div>
+                    </div>
+                    <p id="progressText" class="text-sm text-gray-400 mt-1">0%</p>
+                </div>
             </form>
         </div>
         {% else %}
@@ -421,7 +431,7 @@
                 <!-- Made by -->
                 <div class="flex items-center gap-3 mb-3">
                     <div class="h-px w-12 bg-gradient-to-r from-transparent to-gray-700"></div>
-                    <span class="text-gray-500 text-sm">Made with ❤️ by</span>
+                    <span class="text-gray-500 text-sm">Made with Looooove by</span>
                     <div class="h-px w-12 bg-gradient-to-l from-transparent to-gray-700"></div>
                 </div>
                 <p class="text-lg font-bold gradient-text mb-3">The CoCo-Devs</p>
@@ -435,7 +445,7 @@
                 
                 <!-- Legal -->
                 <div class="text-center space-y-1">
-                    <p class="text-xs text-gray-600">Do not post anything that you do not have permission to post.</p>
+                    <p class="text-xs text-gray-600">By using this site, you are aggreeing to <a href="/legal" class="text-blue-700">this aggrement</a>.</p>
                     <p class="text-xs text-gray-600">Copyright © 2025 Nezar. All rights reserved.</p>
                 </div>
             </div>

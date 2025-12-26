@@ -1,4 +1,5 @@
 /src/static/uploads
+/src/static/avatars
 /src/database.db
 /src/__pycache__
 *.pyc
