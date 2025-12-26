@@ -23,6 +23,7 @@ if __name__ == "__main__":
     """
     if arg.server or os.path.exists("server"):
         # For network access (development/testing):
+        print("Running as a server")
         app.run(host="0.0.0.0", port=arg.port, debug=False)
     else:
         # For local development only:
