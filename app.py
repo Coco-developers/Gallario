@@ -5,7 +5,7 @@
 # Features: User registration/login, image uploads, likes/dislikes, comments,
 # notifications, and user profiles with editable descriptions.
 
-# Made by Nezar Bahid @ AUI 
+# Made by Nezar Bahid -- CEO of Coco-devs @ AUI 
 # =============================================================================
 from src.Routing import *
 import os
