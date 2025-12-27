@@ -113,6 +113,83 @@
 
      /* Avatar ring */
        .avatar-ring { padding: 2px; background: linear-gradient(135deg,#22d3ee,#3b82f6,#8b5cf6); border-radius: 50%; }
+     
+     
+       
+     /* =======================
+   
+     Mobile optimizations
+     ======================= */
+     @media (max-width: 640px) {
+
+     body {
+        overflow-x: hidden;
+      }
+
+      /* Cards spacing */
+      .glass-card {
+        padding: 1.1rem;
+        margin-bottom: 1.75rem;
+      }
+
+      /* Reduce hover motion on touch */
+      .glass-card:hover,
+      .post-card:hover .post-image,
+      .btn-primary-gradient:hover,
+      .like-btn:hover,
+      .dislike-btn:hover {
+        transform: none;
+        box-shadow: none;
+      }
+
+      /* Navbar spacing */
+      nav .px-4 {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+
+      /* Logo sizing */
+      nav h1 {
+        font-size: 1.35rem;
+      }
+
+      /* Upload input comfort */
+      input[type="text"],
+      input[type="file"] {
+        font-size: 0.95rem;
+      }
+
+      /* Buttons: better tap targets */
+      button,
+      a.btn-primary-gradient {
+        min-height: 44px;
+      }
+
+      /* Post image containment */
+      .post-image {
+        max-height: 70vh;
+        object-fit: cover;
+      }
+
+      /* Pagination stack */
+      .glass-card .flex.items-center {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .glass-card .flex-1 {
+        flex: none;
+        width: 100%;
+        text-align: center;
+      }
+
+      /* Footer padding */
+      footer {
+        padding-top: 2.5rem;
+        padding-bottom: 2.5rem;
+      }
+     }
 
     </style>
 </head>
