@@ -10,7 +10,7 @@ from flask import session
 from werkzeug.utils import secure_filename  # Secure file name handling
 from PIL import Image  # Image processing (resize, crop, etc.)
 
-from src.Config import *
+from src.backend.Config import *
 
 # =============================================================================
 # DATABASE HELPER FUNCTIONS

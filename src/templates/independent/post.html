@@ -11,7 +11,7 @@
     <div class="navbar">
         <div class="nav-left">
             <a href="{{ url_for('main.index') }}">
-                <img src="/static/logo.png" class="Logo">
+                <img src="/static/images/logo.png" class="Logo">
             </a>
         </div>
         <div class="nav-right">
@@ -100,8 +100,6 @@
 
 <script src="{{ url_for('static', filename='code.js') }}"></script>
 <script src="{{ url_for('static', filename='post_index.js') }}"></script>
-{% if user %}
-    {% include "side.html" %}
-{% endif%}
+{% include "fragments/side.html" %}
 </body>
 </html>

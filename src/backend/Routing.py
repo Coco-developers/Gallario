@@ -13,8 +13,8 @@ from werkzeug.security import generate_password_hash, check_password_hash  # Pas
 from werkzeug.utils import secure_filename  # Secure file name handling
 from PIL import Image  # Image processing (resize, crop, etc.)
  
-from src.Config import *
-from src.Helpers import *
+from src.backend.Config import *
+from src.backend.Helpers import *
 
 
 # =============================================================================
@@ -87,7 +87,7 @@ def login():
             flash("Invalid username or password", "error")
     
     # Show login form (GET request or failed POST)
-    return render_template("login.html", register=False, user=current_user())
+    return render_template("actions/login.html", register=False, user=current_user())
 
 @main_bp.route("/logout")
 def logout():
@@ -127,7 +127,7 @@ def register():
         # Process avatar if provided
         avatar_path = save_avatar_file(avatar_file) if avatar_file else None
         if not avatar_path:
-            avatar_path = 'avatars/unknown.png'  # Use default avatar
+            avatar_path = '../static/avatars/unknown.png'  # Use default avatar
 
         # Create user account
         db = get_db()
@@ -147,7 +147,7 @@ def register():
             return redirect(url_for("main.register"))
 
     # Show registration form (GET request or failed POST)
-    return render_template("login.html", register=True, user=current_user())
+    return render_template("actions/login.html", register=True, user=current_user())
 
 @main_bp.route("/upload", methods=["POST"])
 def upload():
@@ -402,7 +402,7 @@ def view_post(post_id):
             user_vote = user_vote_row["value"] or 0
 
     db.close()
-    return render_template("post.html", post=post, comments=comments, like_count=like_count, dislike_count=dislike_count, user_vote=user_vote, user=current_user())
+    return render_template("independent/post.html", post=post, comments=comments, like_count=like_count, dislike_count=dislike_count, user_vote=user_vote, user=current_user())
 
 @main_bp.route("/comment/<int:post_id>", methods=["POST"])
 def add_comment(post_id):
@@ -531,7 +531,7 @@ def profile(username=None):
     posts = db.execute("SELECT * FROM posts WHERE user_id = ? ORDER BY timestamp DESC", (profile_user["id"],)).fetchall()
     db.close()
     
-    return render_template("profile.html", profile=profile_user, posts=posts, user=current_user())
+    return render_template("independent/profile.html", profile=profile_user, posts=posts, user=current_user())
 
 @main_bp.route("/profile/avatar", methods=["POST"])
 def change_avatar():
@@ -701,7 +701,7 @@ def mark_notification_seen(notif_id):
 
 @main_bp.route("/legal")
 def legal():
-    return render_template("legal_agreement.html")
+    return render_template("ect/legal_agreement.html")
 @main_bp.route("/download")
 def download_webthingy():
-    return render_template("download.html")
+    return render_template("ect/download.html")

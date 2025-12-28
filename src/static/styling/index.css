@@ -3,7 +3,7 @@
 =========================== */
 @font-face {
   font-family: "Biome";
-  src: url("./Biome.ttf") format("truetype");
+  src: url("/static/fonts/Biome.ttf") format("truetype");
   font-display: swap;
 }
 

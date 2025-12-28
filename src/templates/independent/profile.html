@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ profile['username'] }} - Profile</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styling/index.css') }}">
 </head>
 <body>
     <input class="input-group" type="text" id="description_input" placeholder="Enter your new description">
@@ -13,7 +13,7 @@
         <!-- Left: Logo -->
         <div class="nav-left">
             <a href="{{ url_for('main.index') }}">
-                <img src="/static/logo.png" class="Logo">
+                <img src="/static/images/logo.png" class="Logo">
                 </img>
             </a>
         </div>
@@ -73,13 +73,11 @@
     Post = false;
 </script>
 {% if user and user['username'] == profile['username'] %}
-<script src="{{ url_for('static', filename='change_desc.js') }}"></script>
+<script src="/static/javascript/change_desc.js"></script>
 {% endif %} 
 
 
-<script src="/static/code.js"></script>
-{% if user %}
-    {% include "side.html" %}
-{% endif%}
+<script src="/static/javascript/code.js"></script>
+{% include "fragments/side.html" %}
 </body>
 </html>
