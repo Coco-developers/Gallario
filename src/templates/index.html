@@ -377,6 +377,32 @@
         </div>
       </div>
      </div>
+
+
+ <script>
+ document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.like-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const postId = btn.dataset.id;
+            const countSpan = document.getElementById(`like-count-${postId}`);
+            countSpan.textContent = parseInt(countSpan.textContent) + 1;
+        });
+    });
+
+    document.querySelectorAll('.dislike-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const postId = btn.dataset.id;
+            const countSpan = document.getElementById(`dislike-count-${postId}`);
+            countSpan.textContent = parseInt(countSpan.textContent) + 1;
+        });
+    });
+ });
+ </script>
+
+
+
 </body>
 <!-- Footer -->
 <footer class="relative w-screen left-1/2 -ml-[50vw] border-t border-white/5 mt-24">
